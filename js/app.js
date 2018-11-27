@@ -7,16 +7,18 @@ class Constants {
     constructor() {
         // constants
         this.SCOREBOARD_HEIGHT = 100;   // height of scoreboard
-        this.ROWS = 6;          // number of rows in game
-        this.COLS = 5;          // number of columns in game
-        this.ROW_HEIGHT = 83;   // height of a single row
-        this.COL_WIDTH = 101;   // width of a single column
-        this.ENEMIES = 3;       // number of enemy bugs
-        this.PLAYER_ROW = 5;    // player starting row
-        this.PLAYER_COL = 2;    // player starting column
-        this.ENEMY_ROW = 1;     // enemy starting row
-        this.ENEMY_COL = -1;    // enemy starting column
-        this.WATER_POINTS = 100;// points for reaching water
+        this.TOP_MARGIN = 50;           // margin at top of canvas
+        this.PLAYER_LIVES = 4;          // number of "lives" per game
+        this.ROWS = 6;                  // number of rows in game
+        this.COLS = 5;                  // number of columns in game
+        this.ROW_HEIGHT = 83;           // height of a single row
+        this.COL_WIDTH = 101;           // width of a single column
+        this.ENEMIES = 3;               // number of enemy bugs
+        this.PLAYER_ROW = 5;            // player starting row
+        this.PLAYER_COL = 2;            // player starting column
+        this.ENEMY_ROW = 1;             // enemy starting row
+        this.ENEMY_COL = -1;            // enemy starting column
+        this.WATER_POINTS = 100;        // points for reaching water
     }
 }
 
@@ -26,8 +28,9 @@ var constants = new Constants();
 // Common base class for player and enemies
 ///////////////////////////////////////////////////////////
 class Entity {
-    constructor(sprite) {
+    constructor(sprite, vOffset) {
         this.sprite = sprite;
+        this.vOffset = vOffset;
         this.row = 0;
         this.col = 0;
     }
@@ -35,8 +38,8 @@ class Entity {
     render() {
         const x = this.col * constants.COL_WIDTH;
         const y = this.row * constants.ROW_HEIGHT
-                    - constants.ROW_HEIGHT/4
-                    + constants.SCOREBOARD_HEIGHT;
+                    + constants.SCOREBOARD_HEIGHT
+                    + this.vOffset;
         ctx.drawImage(Resources.get(this.sprite), x, y);
     }
 }
@@ -47,7 +50,7 @@ class Entity {
 class Enemy extends Entity {
 
     constructor() {
-        super('images/enemy-bug.png');
+        super('images/enemy-bug.png', -23);
         this.increment = 0.1;
     }
 
@@ -97,14 +100,26 @@ class Enemy extends Entity {
 // Player class -- the hero of our story
 ///////////////////////////////////////////////////////////
 class Player extends Entity {
-
     constructor() {
-        super('images/char-boy.png');
+        super('images/char-boy.png', -10);
         this.points = 0;
+        this.spriteIndex = 0;
+        this.livesLeft = constants.PLAYER_LIVES;
+
+        // the array of images/sprites for the player
+        this.spriteArray = [
+            'images/char-boy.png',
+            'images/char-cat-girl.png',
+            'images/char-horn-girl.png',
+            'images/char-pink-girl.png',
+            'images/char-princess-girl.png'
+        ];
+
     }
 
     // reset the player
     reset() {
+        this.livesLeft = constants.PLAYER_LIVES;
         this.points = 0;
         this.sendHome();
     }
@@ -124,11 +139,40 @@ class Player extends Entity {
         }
     }
 
+    // the player lost a life, send him home and decrement lives left
+    loseOneLife() {
+        this.sendHome();
+        this.livesLeft--;
+
+        // if he lost his last life, game over
+        if (this.livesLeft <= 0) {
+
+            if (window.confirm("Game over! Do you want to play again?")) {
+                // yes, start a new game
+                reset();
+            } else {
+                // no, go to udacity website
+                window.location.href = "http://www.udacity.com";
+            }
+        }
+    };
     handleInput(keyCode) {
         switch(keyCode) {
             // pause and invoke the JS debugger
             case 'escape': {
                 //debugger;
+                break;
+            }
+
+            // toggle through the various player sprites
+            case 'home': {
+                this.spriteIndex++;
+                if (this.spriteIndex >= this.spriteArray.length) {
+                    this.spriteIndex = 0;
+                }
+                this.sprite = this.spriteArray[this.spriteIndex];
+                player.render();
+                scoreboard.render();
                 break;
             }
 
@@ -175,7 +219,7 @@ class Scoreboard {
 
     constructor() {
         this.x = 0;
-        this.y = constants.SCOREBOARD_HEIGHT;
+        this.y = constants.TOP_MARGIN;
         this.width = constants.COLS * constants.COL_WIDTH;
         this.height = constants.SCOREBOARD_HEIGHT;
     }
@@ -190,12 +234,56 @@ class Scoreboard {
         ctx.lineWidth = 2;
         ctx.stroke();
 
+        // draw background rect for player icon
+        const scoreboardMargin = 10;
+        const rectX = this.x + scoreboardMargin;
+        const rectY = this.y + scoreboardMargin;
+        const rectHeight = this.height - 2 * scoreboardMargin;
+        const rectWidth = rectHeight;
+        ctx.beginPath();
+        ctx.rect(rectX, rectY, rectWidth, rectHeight);
+        ctx.fillStyle = "rgb(255,255,255)";
+        ctx.fill();
+        ctx.strokeStyle = "rgb(80,80,80)";
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        // draw player icon (75% size)
+        const img = Resources.get(player.sprite);
+        const iconWidth = img.naturalWidth * 0.75;
+        const iconHeight = img.naturalHeight * 0.75;
+        const iconX = rectX + (rectWidth - iconWidth) / 2;
+        const iconY = rectY + (rectHeight - iconHeight) / 2 - 2*scoreboardMargin;
+        ctx.drawImage(img, iconX, iconY, iconWidth, iconHeight);
+
+        // draw "HOME" help text
+        ctx.fillStyle = "rgb(145,145,145)";
+        ctx.font = "10px Arial";
+        ctx.textAlign = "center";
+        ctx.fillText("PRESS HOME", rectX + rectWidth / 2, rectY + rectHeight - 3);
+
+        // draw number of lives left
+        const lifeWidth = img.naturalWidth * 0.5;
+        const lifeHeight = img.naturalHeight * 0.5;
+        let lifeX = this.x + rectWidth + 2 * scoreboardMargin;
+        const lifeY = this.y + (this.height - lifeHeight - constants.TOP_MARGIN * 0.5) / 2 + 6;
+        for (let i=0; i < constants.PLAYER_LIVES; i++) {
+            if (i >= player.livesLeft) {  // draw lives that are gone as ghosts
+                ctx.save();
+                ctx.globalAlpha = 0.2;
+            }
+            ctx.drawImage(img, lifeX, lifeY, lifeWidth, lifeHeight);
+            if (i >= player.livesLeft) {
+                ctx.restore();
+            }
+            lifeX += lifeWidth - 10;
+        }
+
         // draw point total
         ctx.font = "40pt Courier";
         ctx.textAlign = "right";
         ctx.fillStyle = "rgb(145,145,145)";
-        ctx.fillText(player.points,
-                        this.x + this.width * 0.95,
+        ctx.fillText(player.points, this.x + this.width - scoreboardMargin,
                         this.y + this.height * 0.7);
     }
 }
@@ -219,6 +307,8 @@ var scoreboard = new Scoreboard();
 // Player.handleInput() method. You don't need to modify this.
 document.addEventListener('keyup', function(e) {
     var allowedKeys = {
+        27: 'escape',
+        36: 'home',
         37: 'left',
         38: 'up',
         39: 'right',

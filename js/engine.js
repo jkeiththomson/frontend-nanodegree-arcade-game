@@ -29,7 +29,9 @@ var Engine = (function(global) {
     // the rows vertically and having the bottom row be somewhat taller than
     // the other rows.)
     canvas.width = constants.COLS * constants.COL_WIDTH;
-    canvas.height = constants.ROWS * constants.COL_WIDTH + constants.SCOREBOARD_HEIGHT;
+    canvas.height = constants.ROWS * constants.COL_WIDTH
+                        + constants.SCOREBOARD_HEIGHT
+                        + constants.ROW_HEIGHT - constants.COL_WIDTH;
     doc.body.appendChild(canvas);
 
     /* This function serves as the kickoff point for the game loop itself
@@ -106,14 +108,7 @@ var Engine = (function(global) {
         for (var i=0; i < allEnemies.length; i++) {
             var enemy = allEnemies[i];
             if (enemy.occupiesSquare(player.col, player.row) ) {
-                // game over
-                if (window.confirm("Game over! Do you want to play again?")) {
-                    // yes, start a new game
-                    reset();
-                } else {
-                    // no, go to udacity website
-                    window.location.href = "http://www.udacity.com";
-                }
+                player.loseOneLife();
             }
         }
     }
@@ -205,7 +200,11 @@ var Engine = (function(global) {
         'images/water-block.png',
         'images/grass-block.png',
         'images/enemy-bug.png',
-        'images/char-boy.png'
+        'images/char-boy.png',
+        'images/char-cat-girl.png',
+        'images/char-horn-girl.png',
+        'images/char-pink-girl.png',
+        'images/char-princess-girl.png',
     ]);
     Resources.onReady(init);
 
