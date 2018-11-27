@@ -79,7 +79,7 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        // checkCollisions();
+        checkCollisions();
     }
 
     /* This is called by the update function and loops through all of the
@@ -94,6 +94,24 @@ var Engine = (function(global) {
             enemy.update(dt);
         });
         player.update();
+    }
+
+    // see if any enemies are in the same grid square as the player;
+    // if so, player is dead, count one life lost
+    function checkCollisions() {
+        for (var i=0; i < allEnemies.length; i++) {
+            var enemy = allEnemies[i];
+            if (enemy.occupiesSquare(player.col, player.row) ) {
+                // game over
+                if (window.confirm("Game over! Do you want to play again?")) {
+                    // yes, start a new game
+                    reset();
+                } else {
+                    // no, go to udacity website
+                    window.location.href = "http://www.udacity.com";
+                }
+            }
+        }
     }
 
     /* This function initially draws the "game level", it will then call
@@ -161,7 +179,13 @@ var Engine = (function(global) {
      * those sorts of things. It's only called once by the init() method.
      */
     function reset() {
-        // noop
+        // reset player
+        player.reset();
+
+        // reset enemies
+        allEnemies.forEach(function(enemy) {
+            enemy.reset();
+        });
     }
 
     /* Go ahead and load all of the images we know we're going to need to
