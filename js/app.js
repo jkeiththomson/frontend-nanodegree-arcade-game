@@ -6,6 +6,7 @@
 class Constants {
     constructor() {
         // constants
+        this.SCOREBOARD_HEIGHT = 100;   // height of scoreboard
         this.ROWS = 6;          // number of rows in game
         this.COLS = 5;          // number of columns in game
         this.ROW_HEIGHT = 83;   // height of a single row
@@ -15,6 +16,7 @@ class Constants {
         this.PLAYER_COL = 2;    // player starting column
         this.ENEMY_ROW = 1;     // enemy starting row
         this.ENEMY_COL = -1;    // enemy starting column
+        this.WATER_POINTS = 100;// points for reaching water
     }
 }
 
@@ -32,9 +34,11 @@ class Entity {
 
     render() {
         const x = this.col * constants.COL_WIDTH;
-        const y = this.row * constants.ROW_HEIGHT - constants.ROW_HEIGHT/4;
+        const y = this.row * constants.ROW_HEIGHT
+                    - constants.ROW_HEIGHT/4
+                    + constants.SCOREBOARD_HEIGHT;
         ctx.drawImage(Resources.get(this.sprite), x, y);
-    };
+    }
 }
 
 ///////////////////////////////////////////////////////////
@@ -79,9 +83,9 @@ class Enemy extends Entity {
         // compute row and column of this enemy's head and tail
         // make the enemy be 1/3 of the way into a column before
         // a collision is detected there
-        var enemyRow = this.row;
-        var enemyTailCol = Math.floor(this.col + 0.33333333);
-        var enemyHeadCol = Math.floor(this.col + 0.66666666);
+        const enemyRow = this.row;
+        const enemyTailCol = Math.floor(this.col + 0.33333333);
+        const enemyHeadCol = Math.floor(this.col + 0.66666666);
 
         // see if input row and column are the same as this enemy's
         return (irow == enemyRow &&
@@ -96,10 +100,12 @@ class Player extends Entity {
 
     constructor() {
         super('images/char-boy.png');
+        this.points = 0;
     }
 
     // reset the player
     reset() {
+        this.points = 0;
         this.sendHome();
     }
 
@@ -113,6 +119,7 @@ class Player extends Entity {
     update(dt) {
         // if player reached the water, reset him to home
         if (this.row <= 0) {
+            this.points += constants.WATER_POINTS;
             this.sendHome();
         }
     }
@@ -161,12 +168,42 @@ class Player extends Entity {
     }
 }
 
+///////////////////////////////////////////////////////////
+// Scoreboard class
+///////////////////////////////////////////////////////////
+class Scoreboard {
+
+    constructor() {
+        this.x = 0;
+        this.y = constants.SCOREBOARD_HEIGHT;
+        this.width = constants.COLS * constants.COL_WIDTH;
+        this.height = constants.SCOREBOARD_HEIGHT;
+    }
+
+    render() {
+        // draw background
+        ctx.beginPath();
+        ctx.rect(this.x, this.y, this.width, this.height);
+        ctx.fillStyle = "rgb(206,218,255)";
+        ctx.fill();
+        ctx.strokeStyle = "rgb(80,80,80)";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // draw point total
+        ctx.font = "40pt Courier";
+        ctx.textAlign = "right";
+        ctx.fillStyle = "rgb(145,145,145)";
+        ctx.fillText(player.points,
+                        this.x + this.width * 0.95,
+                        this.y + this.height * 0.7);
+    }
+}
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
 
-// create enemies
 var allEnemies = [];
 for (let i=0; i < constants.ENEMIES; i++) {
     allEnemies[i] = new Enemy();
@@ -175,7 +212,8 @@ for (let i=0; i < constants.ENEMIES; i++) {
 // create player
 var player = new Player();
 
-
+// create scoreboard
+var scoreboard = new Scoreboard();
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.

@@ -24,8 +24,12 @@ var Engine = (function(global) {
         ctx = canvas.getContext('2d'),
         lastTime;
 
-    canvas.width = 505;
-    canvas.height = 606;
+    // compute size of canvas (Note that for the height of a row we are
+    // using COL_WIDTH and not ROW_HEIGHT. This has the effect of overlapping
+    // the rows vertically and having the bottom row be somewhat taller than
+    // the other rows.)
+    canvas.width = constants.COLS * constants.COL_WIDTH;
+    canvas.height = constants.ROWS * constants.COL_WIDTH + constants.SCOREBOARD_HEIGHT;
     doc.body.appendChild(canvas);
 
     /* This function serves as the kickoff point for the game loop itself
@@ -152,7 +156,9 @@ var Engine = (function(global) {
                  * so that we get the benefits of caching these images, since
                  * we're using them over and over.
                  */
-                ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 83);
+                ctx.drawImage(Resources.get(rowImages[row]),
+                    col * constants.COL_WIDTH,
+                    row * constants.ROW_HEIGHT + constants.SCOREBOARD_HEIGHT);
             }
         }
 
@@ -164,14 +170,16 @@ var Engine = (function(global) {
      * on your enemy and player entities within app.js
      */
     function renderEntities() {
-        /* Loop through all of the objects within the allEnemies array and call
-         * the render function you have defined.
-         */
+        // draw the enemies
         allEnemies.forEach(function(enemy) {
             enemy.render();
         });
 
+        // draw the player
         player.render();
+
+        // draw the scoreboard
+        scoreboard.render();
     }
 
     /* This function does nothing but it could have been a good place to
