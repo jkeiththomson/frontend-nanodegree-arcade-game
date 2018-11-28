@@ -287,7 +287,7 @@ class Gem extends Entity {
         }
 
         // place the gem in a grid square
-        this.place();
+        place();
 
         // hide the gem
         this.visible = false;
@@ -323,7 +323,6 @@ class Gem extends Entity {
             gemCol = Math.floor( Math.random() * constants.COLS );
 
             // make sure the player is not on that square
-            let gemAlreadyThere = false;
             if (player.occupies(gemCol, gemRow)) {
 
                 // oops, the player's on that square, try again
@@ -332,8 +331,8 @@ class Gem extends Entity {
             } else {
 
                 // make sure there are no gems there, either
-                for (let j=0; j < allGems.length; j++) {
-                    const gem = allGems[j];
+                let gemAlreadyThere = false;
+                allGems.forEach(function(gem)) {
                     if (gem.occupies(gemCol, gemRow)) {
                         gemAlreadyThere = true;
                         break;
@@ -409,7 +408,7 @@ class Scoreboard {
         const iconWidth = img.naturalWidth * 0.75;
         const iconHeight = img.naturalHeight * 0.75;
         const iconX = rectX + (rectWidth - iconWidth) / 2;
-        const iconY = rectY + (rectHeight - iconHeight) / 2 - scoreboardMargin;
+        const iconY = rectY + (rectHeight - iconHeight) / 2 - 2*scoreboardMargin;
         ctx.drawImage(img, iconX, iconY, iconWidth, iconHeight);
 
         // draw "HOME" help text
@@ -422,7 +421,7 @@ class Scoreboard {
         const lifeWidth = img.naturalWidth * 0.5;
         const lifeHeight = img.naturalHeight * 0.5;
         let lifeX = this.x + rectWidth + 2 * scoreboardMargin;
-        const lifeY = this.y + (this.height - lifeHeight - constants.TOP_MARGIN * 0.5) / 2 + 10;
+        const lifeY = this.y + (this.height - lifeHeight - constants.TOP_MARGIN * 0.5) / 2 + 6;
         for (let i=0; i < constants.PLAYER_LIVES; i++) {
             if (i >= player.livesLeft) {  // draw lives that are gone as ghosts
                 ctx.save();

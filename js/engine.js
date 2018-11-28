@@ -96,19 +96,45 @@ var Engine = (function(global) {
      * render methods.
      */
     function updateEntities(dt) {
+        // update the enemies (animates them moving across the screen)
         allEnemies.forEach(function(enemy) {
             enemy.update(dt);
         });
-        player.update();
+
+        // update the player
+        player.update(dt);
+
+        // update the gems
+        allGems.forEach(function(gem) {
+            gem.update(dt);
+        });
     }
 
-    // see if any enemies are in the same grid square as the player;
-    // if so, player is dead, count one life lost
+    // see if the player has landed on a populated square
     function checkCollisions() {
-        for (var i=0; i < allEnemies.length; i++) {
-            var enemy = allEnemies[i];
-            if (enemy.occupiesSquare(player.col, player.row) ) {
+        // if player reached the water, reset him to home
+        if (player.row <= 0) {
+            player.points += constants.WATER_POINTS;
+            player.sendHome();
+            return;
+        }
+
+        // if any enemy is in the same grid square as the player,
+        // player is dead, count one life lost
+        for (let i=0; i < allEnemies.length; i++) {
+            const enemy = allEnemies[i];
+            if (enemy.occupies(player.col, player.row) ) {
                 player.loseOneLife();
+            }
+        }
+
+        // if any gem is in the same grid square as the player,
+        // collect points and reset the gem
+        for (let i=0; i < allGems.length; i++) {
+            const gem = allGems[i];
+            if (gem.occupies(player.col, player.row) && gem.visible) {
+                player.points += gem.points;
+                gem.reset();
             }
         }
     }
@@ -165,15 +191,20 @@ var Engine = (function(global) {
      * on your enemy and player entities within app.js
      */
     function renderEntities() {
-        // draw the enemies
+        // draw gems
+        allGems.forEach(function(gem) {
+            gem.render();
+        });
+
+        // draw enemies
         allEnemies.forEach(function(enemy) {
             enemy.render();
         });
 
-        // draw the player
+        // draw player
         player.render();
 
-        // draw the scoreboard
+        // draw scoreboard
         scoreboard.render();
     }
 
@@ -205,7 +236,10 @@ var Engine = (function(global) {
         'images/char-horn-girl.png',
         'images/char-pink-girl.png',
         'images/char-princess-girl.png',
-    ]);
+        'images/gem-blue.png',
+        'images/gem-green.png',
+        'images/gem-orange.png'
+        ]);
     Resources.onReady(init);
 
     /* Assign the canvas' context object to the global variable (the window
