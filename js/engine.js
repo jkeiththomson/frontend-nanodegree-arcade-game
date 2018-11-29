@@ -9,8 +9,9 @@
  * drawn but that is not the case. What's really happening is the entire "scene"
  * is being drawn over and over, presenting the illusion of animation.
  *
- * This engine makes the canvas' context (ctx) object globally available to make
- * writing app.js a little simpler to work with.
+ * This engine is available globally via the Engine variable and it also makes
+ * the canvas' context (ctx) object globally available to make writing app.js
+ * a little simpler to work with.
  */
 
 var Engine = (function(global) {
@@ -29,9 +30,9 @@ var Engine = (function(global) {
     // the rows vertically and having the bottom row be somewhat taller than
     // the other rows.)
     canvas.width = constants.COLS * constants.COL_WIDTH;
-    canvas.height = constants.ROWS * constants.COL_WIDTH
-                        + constants.SCOREBOARD_HEIGHT
-                        + constants.ROW_HEIGHT - constants.COL_WIDTH;
+    canvas.height = constants.ROWS * constants.COL_WIDTH +
+                        constants.SCOREBOARD_HEIGHT +
+                        constants.ROW_HEIGHT - constants.COL_WIDTH;
     doc.body.appendChild(canvas);
 
     /* This function serves as the kickoff point for the game loop itself
@@ -113,7 +114,7 @@ var Engine = (function(global) {
         });
     }
 
-    // see if the player has landed on a populated square
+    // see if the player has landed on an occupied square
     function checkCollisions() {
         // if player reached the water, reset him to home
         if (player.row <= 0) {
@@ -236,7 +237,7 @@ var Engine = (function(global) {
         'images/gem-blue.png',
         'images/gem-green.png',
         'images/gem-orange.png'
-        ]);
+    ]);
     Resources.onReady(init);
 
     /* Assign the canvas' context object to the global variable (the window

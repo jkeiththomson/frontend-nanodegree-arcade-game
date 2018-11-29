@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////
-// Consants class
+// Constants class
 ///////////////////////////////////////////////////////////
 
 // constants used for game play
@@ -8,35 +8,34 @@ class Constants {
         // constants
         this.SCOREBOARD_HEIGHT = 100;   // height of scoreboard
         this.TOP_MARGIN = 50;           // margin at top of canvas
-        this.PLAYER_LIVES = 4;          // number of "lives" per game
         this.ROWS = 6;                  // number of rows in game
         this.COLS = 5;                  // number of columns in game
         this.ROW_HEIGHT = 83;           // height of a single row
         this.COL_WIDTH = 101;           // width of a single column
         this.ENEMIES = 3;               // number of enemy bugs
+        this.PLAYER_LIVES = 4;          // number of "lives" per game
         this.PLAYER_ROW = 5;            // player starting row
         this.PLAYER_COL = 2;            // player starting column
-        this.ENEMY_ROW = 1;             // enemy starting row
-        this.ENEMY_COL = -1;            // enemy starting column
         this.WATER_POINTS = 100;        // points for reaching water
         this.GEMS = 3;                  // number of simultaneous gems
-        this.GEM_HIDDEN_TIME_MIN = 2;   // min number of seconds before a gem appears
-        this.GEM_HIDDEN_TIME_MAX = 6;   // max number of seconds before a gem appears
-        this.GEM_VISIBLE_TIME_MIN = 2;  // min number of seconds a gem stays onscreen
-        this.GEM_VISIBLE_TIME_MAX = 6;  // max number of seconds a gem stays onscreen
+        this.GEM_HIDDEN_TIME_MIN = 2;   // min seconds before a gem appears
+        this.GEM_HIDDEN_TIME_MAX = 6;   // max seconds before a gem appears
+        this.GEM_VISIBLE_TIME_MIN = 2;  // min seconds a gem stays onscreen
+        this.GEM_VISIBLE_TIME_MAX = 6;  // max seconds a gem stays onscreen
     }
 }
 
-//////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 // Common base class for player, enemies and gems
 ///////////////////////////////////////////////////////////
 class Entity {
     constructor(sprite) {
-        this.sprite = sprite;
+        this.sprite = sprite;   // filename of sprite resource
         this.row = 0;
         this.col = 0;
     }
 
+    // render this entity into its row and column
     render() {
         const x = this.col * constants.COL_WIDTH;
         const y = this.row * constants.ROW_HEIGHT
@@ -44,10 +43,12 @@ class Entity {
         ctx.drawImage(Resources.get(this.sprite), x, y);
     }
 
+    // called by main() periodically to update entity
     update(dt) {
         // base class update() does nothing
     }
 
+    // return true if entity occupies the specified row/col
     occupies(icol, irow) {
         return this.col == icol && this.row == irow;
     }
@@ -57,7 +58,6 @@ class Entity {
 // Enemy class -- bugs that our player must avoid
 ///////////////////////////////////////////////////////////
 class Enemy extends Entity {
-
     constructor() {
         super('images/enemy-bug.png');
         this.increment = 0.1;
@@ -75,7 +75,7 @@ class Enemy extends Entity {
         this.increment = Math.random() * 3.0 + 1.5;
     }
 
-    // update the enemy's position, required method for game
+    // update the enemy's position
     update(dt) {
         // You should multiply any movement by the dt parameter
         // which will ensure the game runs at the same speed for
@@ -91,14 +91,14 @@ class Enemy extends Entity {
     // return true if this enemy is at least
     // partially covering this square
     occupies(icol, irow) {
-        // compute row and column of this enemy's head and tail
+        // compute row and column of this enemy's head and tail.
         // make the enemy be 1/3 of the way into a column before
         // a collision is detected there
         const enemyRow = this.row;
         const enemyTailCol = Math.floor(this.col + 0.33333333);
         const enemyHeadCol = Math.floor(this.col + 0.66666666);
 
-        // see if input row and column are the same as this enemy's
+        // check if input row and column are the same as this enemy's
         return (irow == enemyRow &&
                (icol == enemyHeadCol || icol == enemyTailCol) );
     }
@@ -149,6 +149,7 @@ class Player extends Entity {
         }
     }
 
+    // handle keyboard input to play the game
     handleInput(keyCode) {
         switch(keyCode) {
 
@@ -210,7 +211,7 @@ class Gem extends Entity {
         this.points = 0;
         this.visible = false;
 
-        // set timeout for how long it will remain hidden
+        // set timeout for how long gem will remain hidden
         this.reset();
     }
 
@@ -245,8 +246,8 @@ class Gem extends Entity {
 
         // draw its point value on top
         var gemTextX = this.col * constants.COL_WIDTH + constants.COL_WIDTH/2;
-        var gemTextY = (this.row + 0.5) * constants.ROW_HEIGHT + constants.ROW_HEIGHT/2 +
-            + 12 + constants.SCOREBOARD_HEIGHT;
+        var gemTextY = (this.row + 0.5) * constants.ROW_HEIGHT +
+            constants.ROW_HEIGHT/2 + 12 + constants.SCOREBOARD_HEIGHT;
         ctx.fillStyle = "rgb(255,255,255)";
         ctx.strokeStyle = "rgb(0,0,0)";
         ctx.font = "700 20px Arial";
@@ -260,7 +261,8 @@ class Gem extends Entity {
     reset() {
 
         // set timeout for when this gem will be shown
-        this.timer = Math.random() * (constants.GEM_HIDDEN_TIME_MAX - constants.GEM_HIDDEN_TIME_MIN) +
+        this.timer = Math.random() *
+            (constants.GEM_HIDDEN_TIME_MAX - constants.GEM_HIDDEN_TIME_MIN) +
             constants.GEM_HIDDEN_TIME_MIN;
 
         // force an unequal distrubtion: 50% orange, 30% green, 20% blue
@@ -290,7 +292,8 @@ class Gem extends Entity {
         this.visible = true;
 
         // set timer so we show the gem for a random duration
-        this.timer = Math.random() * (constants.GEM_VISIBLE_TIME_MAX - constants.GEM_VISIBLE_TIME_MIN) +
+        this.timer = Math.random() *
+            (constants.GEM_VISIBLE_TIME_MAX - constants.GEM_VISIBLE_TIME_MIN) +
             constants.GEM_VISIBLE_TIME_MIN;
     }
 
@@ -308,18 +311,16 @@ class Gem extends Entity {
         this.col = -1;
         for (let i = 0; i < 10; i++) {
 
-            // pick a random row from 1 to 3
+            // pick a random row from 1-3 and a column from 0-4
             gemRow = Math.floor( Math.random() * 3 + 1 );
-
-            // pick a random col from 0 to COLS-1
             gemCol = Math.floor( Math.random() * constants.COLS );
 
             // make sure the player is not on that square
-            let gemAlreadyThere = false;
+            let squareIsOccupied = false;
             if (player.occupies(gemCol, gemRow)) {
 
                 // oops, the player's on that square, try again
-                continue;
+                squareIsOccupied = true;
 
             } else {
 
@@ -327,26 +328,26 @@ class Gem extends Entity {
                 for (let j=0; j < allGems.length; j++) {
                     const gem = allGems[j];
                     if (gem.occupies(gemCol, gemRow)) {
-                        gemAlreadyThere = true;
+                        squareIsOccupied = true;
                         break;
                     }
                 }
             }
 
-            // if we find a gem there, continue to iterate
-            if (gemAlreadyThere) {
+            // if we found another entity on square, continue to iterate
+            if (squareIsOccupied) {
 
-                // bummer, there's already a gem there
+                // bummer, there's already something there
                 continue;
 
             } else {
-                // no gems found, looks like we have our square
+                // nothing found, looks like we have our square
                 gemPlaced = true;
                 break;
             }
         }
 
-        // if we placed the gem, do some housekeeping
+        // if we succesfully placed the gem, do some housekeeping
         if (gemPlaced) {
             // remember gem's position in the grid
             this.row = gemRow;
@@ -364,7 +365,6 @@ class Gem extends Entity {
 // Scoreboard class
 ///////////////////////////////////////////////////////////
 class Scoreboard {
-
     constructor() {
         this.x = 0;
         this.y = constants.TOP_MARGIN;
@@ -442,23 +442,15 @@ class Scoreboard {
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-
-// constants
 var constants = new Constants();
+var player = new Player();
+var scoreboard = new Scoreboard();
 
-// enemies
 var allEnemies = [];
 for (let i=0; i < constants.ENEMIES; i++) {
     allEnemies[i] = new Enemy();
 }
 
-// player
-var player = new Player();
-
-// scoreboard
-var scoreboard = new Scoreboard();
-
-// gems
 var allGems = [];
 for (let i=0; i < constants.GEMS; i++) {
     allGems[i] = new Gem();
@@ -470,6 +462,7 @@ var gamePaused = false;
 // Event handlers
 ///////////////////////////////////////////////////////////
 
+// game over -- show modal dialog with final score
 function endGame() {
     gamePaused = true;
     const mask = document.getElementById("mask");
@@ -478,8 +471,12 @@ function endGame() {
     text.innerHTML = "You scored " + player.points + " points";
 }
 
+// user wants to play again
 function resetGame(e) {
+    // unpause the game
     gamePaused = false;
+
+    // hide the "game over" dialog
     const mask = document.getElementById("mask");
     mask.classList.remove("show");
 
@@ -497,6 +494,7 @@ function resetGame(e) {
     });
 }
 
+// user wants to stop playing -- send him to udacity.com
 function quitGame(e) {
     window.location.href = "http://www.udacity.com";
 }
