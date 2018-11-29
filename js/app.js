@@ -248,10 +248,10 @@ class Gem extends Entity {
         var gemTextX = this.col * constants.COL_WIDTH + constants.COL_WIDTH/2;
         var gemTextY = (this.row + 0.5) * constants.ROW_HEIGHT +
             constants.ROW_HEIGHT/2 + 12 + constants.SCOREBOARD_HEIGHT;
-        ctx.fillStyle = "rgb(255,255,255)";
-        ctx.strokeStyle = "rgb(0,0,0)";
-        ctx.font = "700 20px Arial";
-        ctx.textAlign = "center";
+        ctx.fillStyle = 'rgb(255,255,255)';
+        ctx.strokeStyle = 'rgb(0,0,0)';
+        ctx.font = '700 20px Arial';
+        ctx.textAlign = 'center';
         ctx.lineWidth = 2;
         ctx.strokeText(this.points, gemTextX, gemTextY);
         ctx.fillText(this.points, gemTextX, gemTextY);
@@ -376,9 +376,9 @@ class Scoreboard {
         // draw background
         ctx.beginPath();
         ctx.rect(this.x, this.y, this.width, this.height);
-        ctx.fillStyle = "rgb(206,218,255)";
+        ctx.fillStyle = 'rgb(206,218,255)';
         ctx.fill();
-        ctx.strokeStyle = "rgb(80,80,80)";
+        ctx.strokeStyle = 'rgb(80,80,80)';
         ctx.lineWidth = 2;
         ctx.stroke();
 
@@ -390,9 +390,9 @@ class Scoreboard {
         const rectWidth = rectHeight;
         ctx.beginPath();
         ctx.rect(rectX, rectY, rectWidth, rectHeight);
-        ctx.fillStyle = "rgb(255,255,255)";
+        ctx.fillStyle = 'rgb(255,255,255)';
         ctx.fill();
-        ctx.strokeStyle = "rgb(80,80,80)";
+        ctx.strokeStyle = 'rgb(80,80,80)';
         ctx.lineWidth = 1;
         ctx.stroke();
 
@@ -405,10 +405,10 @@ class Scoreboard {
         ctx.drawImage(img, iconX, iconY, iconWidth, iconHeight);
 
         // draw "HOME" help text
-        ctx.fillStyle = "rgb(145,145,145)";
-        ctx.font = "10px Arial";
-        ctx.textAlign = "center";
-        ctx.fillText("PRESS HOME", rectX + rectWidth / 2, rectY + rectHeight - 3);
+        ctx.fillStyle = 'rgb(145,145,145)';
+        ctx.font = '10px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('PRESS HOME', rectX + rectWidth / 2, rectY + rectHeight - 3);
 
         // draw number of lives left
         const lifeWidth = img.naturalWidth * 0.5;
@@ -428,9 +428,9 @@ class Scoreboard {
         }
 
         // draw point total
-        ctx.font = "40pt Courier";
-        ctx.textAlign = "right";
-        ctx.fillStyle = "rgb(145,145,145)";
+        ctx.font = '40pt Courier';
+        ctx.textAlign = 'right';
+        ctx.fillStyle = 'rgb(145,145,145)';
         ctx.fillText(player.points, this.x + this.width - scoreboardMargin,
                         this.y + this.height * 0.7);
     }
@@ -465,10 +465,10 @@ var gamePaused = false;
 // game over -- show modal dialog with final score
 function endGame() {
     gamePaused = true;
-    const mask = document.getElementById("mask");
-    mask.classList.add("show");
-    const text = document.getElementById("final-score");
-    text.innerHTML = "You scored " + player.points + " points";
+    const mask = document.getElementById('mask');
+    mask.classList.add('show');
+    const text = document.getElementById('final-score');
+    text.innerHTML = 'You scored ' + player.points + ' points';
 }
 
 // user wants to play again
@@ -477,8 +477,8 @@ function resetGame(e) {
     gamePaused = false;
 
     // hide the "game over" dialog
-    const mask = document.getElementById("mask");
-    mask.classList.remove("show");
+    const mask = document.getElementById('mask');
+    mask.classList.remove('show');
 
     // reset player
     player.reset();
@@ -496,7 +496,7 @@ function resetGame(e) {
 
 // user wants to stop playing -- send him to udacity.com
 function quitGame(e) {
-    window.location.href = "http://www.udacity.com";
+    window.location.href = 'http://www.udacity.com';
 }
 
 // This listens for key presses and sends the keys to your
