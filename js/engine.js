@@ -118,7 +118,7 @@ var Engine = (function(global) {
     function checkCollisions() {
         // if player reached the water, reset him to home
         if (player.row <= 0) {
-            player.points += constants.WATER_POINTS;
+            player.collectPoints(false, constants.WATER_POINTS);
             player.sendHome();
             return;
         }
@@ -137,7 +137,7 @@ var Engine = (function(global) {
         for (let i=0; i < allGems.length; i++) {
             const gem = allGems[i];
             if (gem.occupies(player.col, player.row) && gem.visible) {
-                player.points += gem.points;
+                player.collectPoints(true, gem.points);
                 gem.reset();
             }
         }

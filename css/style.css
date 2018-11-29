@@ -4,6 +4,17 @@ body {
     text-align: center;
 }
 
+h1 {
+	font-size: 32px;
+	text-transform: uppercase;
+	margin: 0;
+}
+
+button {
+	font-size: 16px;
+	padding: 8px 20px;
+}
+
 #mask {
 	top: 0;
 	left: 0;
@@ -22,19 +33,17 @@ body {
 	opacity: 1;
 }
 
-.dialog {
+#dialog {
 	border: 4px solid green;
 	border-radius: 12px;
 	background: rgb(180,225,180);
-	padding: 40px;
+	padding: 32px;
 }
 
-h1 {
-	font-size: 32px;
-	text-transform: uppercase;
-	margin: 0;
+#cb-container {
+	margin-top: 20px;
 }
 
-p {
-	margin-bottom: 32px;
+#mute {
+	margin: 3px 0 3px 3px;
 }

@@ -137,6 +137,16 @@ class Player extends Entity {
         this.col = constants.PLAYER_COL;
     }
 
+    // collect points for reaching water or gathering a gem
+    collectPoints(isGem, pts) {
+        this.points += pts;
+        if (isGem) {
+            sfxDing.playIfNotMuted();
+        } else {
+            sfxSplash.playIfNotMuted();
+        }
+    }
+
     // the player lost a life, send him home and decrement lives left
     loseOneLife() {
         this.sendHome();
@@ -145,7 +155,10 @@ class Player extends Entity {
 
         // if he lost his last life, game over
         if (this.livesLeft <= 0) {
+            sfxGameOver.playIfNotMuted();
             endGame();
+        } else {
+            sfxZap.playIfNotMuted();
         }
     }
 
@@ -170,6 +183,8 @@ class Player extends Entity {
                 this.col--;
                 if (this.col < 0) {
                     this.col = 0;
+                } else {
+                    sfxTick.playIfNotMuted();
                 }
                 break;
             }
@@ -178,6 +193,8 @@ class Player extends Entity {
                 this.col++;
                 if (this.col > constants.COLS - 1) {
                     this.col = constants.COLS - 1;
+                } else {
+                    sfxTick.playIfNotMuted();
                 }
                 break;
             }
@@ -186,6 +203,8 @@ class Player extends Entity {
                 this.row--;
                 if (this.row <= 0) {
                     this.row = 0;
+                } else {
+                    sfxTick.playIfNotMuted();
                 }
                 break;
             }
@@ -194,6 +213,8 @@ class Player extends Entity {
                 this.row++;
                 if (this.row > constants.ROWS - 1) {
                     this.row = constants.ROWS - 1;
+                } else {
+                    sfxTick.playIfNotMuted();
                 }
                 break;
             }
@@ -437,6 +458,22 @@ class Scoreboard {
 }
 
 ///////////////////////////////////////////////////////////
+// SoundFx class
+///////////////////////////////////////////////////////////
+class SoundFx extends Audio {
+    constructor(filename) {
+        super(filename);
+    }
+
+    playIfNotMuted() {
+        const muted = document.getElementById('mute').checked;
+        if (!muted) {
+            super.play();
+        }
+    }
+}
+
+///////////////////////////////////////////////////////////
 // Global variables
 ///////////////////////////////////////////////////////////
 // Now instantiate your objects.
@@ -457,6 +494,15 @@ for (let i=0; i < constants.GEMS; i++) {
 }
 
 var gamePaused = false;
+
+///////////////////////////////////////////////////////////
+// Audio files
+///////////////////////////////////////////////////////////
+var sfxDing = new SoundFx("audio/393633__daronoxus__ding.mp3");
+var sfxTick = new SoundFx("audio/449128__harpyharpharp__fingers-snapping.mp3");
+var sfxZap = new SoundFx("audio/441653__tonycarlisle__bug-zapper.mp3");
+var sfxSplash = new SoundFx("audio/398038__swordofkings128__water-splash-1.mp3");
+var sfxGameOver = new SoundFx("audio/277404__landlucky__game-over-sfx-and-voice.mp3");
 
 ///////////////////////////////////////////////////////////
 // Event handlers
@@ -512,4 +558,5 @@ document.addEventListener('keyup', function(e) {
 
     player.handleInput(allowedKeys[e.keyCode]);
 });
+
 

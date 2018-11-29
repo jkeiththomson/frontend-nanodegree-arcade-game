@@ -30,8 +30,11 @@ This is my take on the "Classic Arcade Game" project from Udacity's "Front End W
 - After you lose four lives, the game is over; a modal dialog will display your final score and offer you the chance to play again
 
 ## Enhancements
-There are several enhancements to the game beyond the minimum spec:
 
+These enhancements have been added to the game (beyond the minimum spec):
+
+- There are sound effects for moving player, reaching water, collecting gem, hitting bug, game over
+- You can mute the sound effects by checking the cheskbox in the "Game Over" dialog
 - Cycle through player avatars by pressing "Home" button on keyboard
 - Gems appear randomly and collecting them earns extra points
 - The scoreboard at the top of the game board shows the selected player avatar, the number of lives remaining and the current score

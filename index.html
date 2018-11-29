@@ -7,11 +7,15 @@
 </head>
 <body>
 	<div id="mask">
-		<div class="dialog">
+		<div id="dialog">
 			<h1> Game Over </h1>
 			<p id="final-score"> You scored some points </p>
 			<button onclick="resetGame()"> Play again </button>
 			<button onclick="quitGame()"> Quit </button>
+			<div id="cb-container">
+				<input type="checkbox" id="mute">
+				<label for="mute">Mute sound effects</label>
+			</div>
 		</div>
 	</div>
     <script src="js/resources.js"></script>
