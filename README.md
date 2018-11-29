@@ -34,7 +34,7 @@ This is my take on the "Classic Arcade Game" project from Udacity's "Front End W
 
 These enhancements have been added to the game (beyond the minimum spec):
 
-- There are sound effects for moving player, reaching water, collecting gem, hitting bug, game over
+- There are sound effects for changing avater, moving player, reaching water, collecting gem, hitting bug, game over
 - You can mute the sound effects by checking the checkbox in the "Game Over" dialog
 - Cycle through player avatars by pressing "Home" button on keyboard
 - Gems appear randomly and collecting them earns extra points
@@ -49,6 +49,7 @@ The sound effects are all from freesound: https://freesound.org/. They are made 
 - sfxSplash: https://freesound.org/s/398038/
 - sfxDing: https://freesound.org/s/393633/
 - sfxTick: https://freesound.org/s/449128/
+- sfxPop: https://freesound.org/s/401542/
 
 ## Contributing
 

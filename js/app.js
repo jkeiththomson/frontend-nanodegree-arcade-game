@@ -168,6 +168,7 @@ class Player extends Entity {
 
             // toggle through the various player sprites
             case 'home': {
+                sfxPop.playIfNotMuted();
                 this.spriteIndex++;
                 if (this.spriteIndex >= this.spriteArray.length) {
                     this.spriteIndex = 0;
@@ -468,6 +469,8 @@ class SoundFx extends Audio {
     playIfNotMuted() {
         const muted = document.getElementById('mute').checked;
         if (!muted) {
+            super.pause();
+            super.currentTime = 0;
             super.play();
         }
     }
@@ -498,6 +501,7 @@ var gamePaused = false;
 ///////////////////////////////////////////////////////////
 // Audio files
 ///////////////////////////////////////////////////////////
+var sfxPop = new SoundFx("audio/401542__conarb13__pop-sound.mp3");
 var sfxDing = new SoundFx("audio/393633__daronoxus__ding.mp3");
 var sfxTick = new SoundFx("audio/449128__harpyharpharp__fingers-snapping.mp3");
 var sfxZap = new SoundFx("audio/441653__tonycarlisle__bug-zapper.mp3");
