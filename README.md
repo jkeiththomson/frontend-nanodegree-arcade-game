@@ -3,18 +3,39 @@
 ## Table of Contents
 
 - [Instructions](#instructions)
+- [Enhancements](#enhancements)
 - [Contributing](#contributing)
 
 ## Instructions
 
-Use this [rubric](https://review.udacity.com/#!/rubrics/15/view) for self-checking your submission.
+This is my take on the "Classic Arcade Game" project from Udacity's "Front End Web Developer" nanodegree course.
 
-Make sure the functions you write are **object-oriented** - either class functions (like `Player` and `Enemy`) or class prototype functions such as `Enemy.prototype.checkCollisions`. Also make sure that the keyword `this` is used appropriately within your class and class prototype functions to refer to the object the function is called upon.
+### To set up the game:
 
-Your **README.md** file should be updated with instructions on both how to 1. Run and 2. Play your arcade game.
+- Download this project from this repository
+- Open the file "index.html" in your browser of choice
+- The game will start automatically
 
-For detailed instructions on how to get started, check out this [guide](https://docs.google.com/document/d/1v01aScPjSWCCWQLIpFqvg3-vXLH2e8_SZQKC8jNO0Dc/pub?embedded=true).
+### Object of the game:
+
+- Earn as many points as you can, by reaching the water and by collecting gems while avoiding the bugs
+
+### To play the game:
+
+- Use the arrow keys to move the player avatar from the bottom of the screen to the water at the top
+- You can cycle through five different player avatars by pressing the Home key
+- If you reach the water, you earn 100 points and the player is reset to its starting position
+- Gems will appear in random squares at random times; move onto a square to collect the gem and earn points
+- Avoid the bugs that glide across the screen from left to right; if you collide with a bug, you will lose a life
+- After you lose four lives, the game is over; a modal dialog will display your final score and offer you the chance to play again
+
+## Enhancements
+There are several enhancements to the game beyond the minimum spec:
+
+- Cycle through player avatars by pressing "Home" button on keyboard
+- Gems appear randomly and collecting them earns extra points
+- The scoreboard at the top of the game board shows the selected player avatar, the number of lives remaining and the current score
 
 ## Contributing
 
-This repository is the starter code for _all_ Udacity students. Therefore, we most likely will not accept pull requests.
+This is a class project. We will not accept pull requests.
