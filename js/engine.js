@@ -84,6 +84,9 @@ var Engine = (function(global) {
      * on the entities themselves within your app.js file).
      */
     function update(dt) {
+        if (gamePaused) {
+            return;
+        }
         updateEntities(dt);
         checkCollisions();
     }
@@ -213,13 +216,7 @@ var Engine = (function(global) {
      * those sorts of things. It's only called once by the init() method.
      */
     function reset() {
-        // reset player
-        player.reset();
-
-        // reset enemies
-        allEnemies.forEach(function(enemy) {
-            enemy.reset();
-        });
+        resetGame();
     }
 
     /* Go ahead and load all of the images we know we're going to need to

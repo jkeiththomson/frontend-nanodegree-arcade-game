@@ -27,8 +27,6 @@ class Constants {
     }
 }
 
-var constants = new Constants();
-
 //////////////////////////////////////////////////////////
 // Common base class for player, enemies and gems
 ///////////////////////////////////////////////////////////
@@ -143,17 +141,11 @@ class Player extends Entity {
     loseOneLife() {
         this.sendHome();
         this.livesLeft--;
+        scoreboard.render();
 
         // if he lost his last life, game over
         if (this.livesLeft <= 0) {
-
-            if (window.confirm("Game over! Do you want to play again?")) {
-                // yes, start a new game
-                reset();
-            } else {
-                // no, go to udacity website
-                window.location.href = "http://www.udacity.com";
-            }
+            endGame();
         }
     }
 
@@ -444,26 +436,69 @@ class Scoreboard {
     }
 }
 
+///////////////////////////////////////////////////////////
+// Global variables
+///////////////////////////////////////////////////////////
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
 
-// create enemies
+// constants
+var constants = new Constants();
+
+// enemies
 var allEnemies = [];
 for (let i=0; i < constants.ENEMIES; i++) {
     allEnemies[i] = new Enemy();
 }
 
-// create player
+// player
 var player = new Player();
 
-// create scoreboard
+// scoreboard
 var scoreboard = new Scoreboard();
 
-// create gems
+// gems
 var allGems = [];
 for (let i=0; i < constants.GEMS; i++) {
     allGems[i] = new Gem();
+}
+
+var gamePaused = false;
+
+///////////////////////////////////////////////////////////
+// Event handlers
+///////////////////////////////////////////////////////////
+
+function endGame() {
+    gamePaused = true;
+    const mask = document.getElementById("mask");
+    mask.classList.add("show");
+    const text = document.getElementById("final-score");
+    text.innerHTML = "You scored " + player.points + " points";
+}
+
+function resetGame(e) {
+    gamePaused = false;
+    const mask = document.getElementById("mask");
+    mask.classList.remove("show");
+
+    // reset player
+    player.reset();
+
+    // reset enemies
+    allEnemies.forEach(function(enemy) {
+        enemy.reset();
+    });
+
+    // reset gems
+    allGems.forEach(function(gem) {
+        gem.reset();
+    });
+}
+
+function quitGame(e) {
+    window.location.href = "http://www.udacity.com";
 }
 
 // This listens for key presses and sends the keys to your
